@@ -1,5 +1,6 @@
 HELP.md
-hireme-payment-service/target/
+target/
+hireme-product-service/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

@@ -1,13 +1,13 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-southeast-1:993564299018:task-definition/hireme-payment:4",
+    "taskDefinitionArn": "arn:aws:ecs:ap-southeast-1:993564299018:task-definition/hireme-product:1",
     "containerDefinitions": [
         {
-            "name": "hireme-payment",
-            "image": "993564299018.dkr.ecr.ap-southeast-1.amazonaws.com/hireme-payment",
+            "name": "hireme-product",
+            "image": "993564299018.dkr.ecr.ap-southeast-1.amazonaws.com/hireme-product",
             "cpu": 0,
             "portMappings": [
                 {
-                    "name": "hireme-payment-8081-tcp",
+                    "name": "hireme-product-8081-tcp",
                     "containerPort": 8081,
                     "hostPort": 8081,
                     "protocol": "tcp",
@@ -16,23 +16,27 @@
             ],
             "essential": true,
             "environment": [],
+            "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
+            "ulimits": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/hireme-payment",
+                    "awslogs-group": "/ecs/hireme-product",
                     "awslogs-region": "ap-southeast-1",
                     "awslogs-stream-prefix": "ecs"
-                }
+                },
+                "secretOptions": []
             }
         }
     ],
-    "family": "hireme-payment",
+    "family": "hireme-product",
+    "taskRoleArn": "arn:aws:iam::993564299018:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::993564299018:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 4,
+    "revision": 1,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -47,6 +51,9 @@
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
         },
         {
             "name": "ecs.capability.execution-role-ecr-pull"
@@ -69,13 +76,13 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "cpu": "512",
-    "memory": "2048",
+    "cpu": "1024",
+    "memory": "3072",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2023-10-09T14:58:55.892Z",
+    "registeredAt": "2023-10-10T16:12:17.674Z",
     "registeredBy": "arn:aws:iam::993564299018:root",
     "tags": []
 }
