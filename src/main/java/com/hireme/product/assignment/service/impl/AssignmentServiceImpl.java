@@ -6,14 +6,23 @@ import com.hireme.product.exception.InvalidStatusTransitionException;
 import com.hireme.product.assignment.mapper.AssignmentMapper;
 import com.hireme.product.assignment.repository.AssignmentRepository;
 import com.hireme.product.assignment.service.AssignmentService;
+import com.hireme.product.recommendation.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
     private final AssignmentMapper assignmentMapper; // Inject the mapper
+
+    @Autowired
+    private RecommendationService recommendationService; // Inject the RecommendationService
+
 
     @Autowired
     public AssignmentServiceImpl(AssignmentRepository assignmentRepository, AssignmentMapper assignmentMapper) {
@@ -138,5 +147,27 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         return assignmentDTO;
     }
-    // Implement other assignment-related methods here if needed.
+    @Override
+    public List<AssignmentDTO> getAssignmentRecommendations(Long assignmentId) {
+        // Retrieve the target assignment
+        AssignmentDTO targetAssignment = getAssignmentById(assignmentId);
+        if (targetAssignment == null) {
+            return new ArrayList<>(); // Handle the case where the target assignment is not found
+        }
+        // Retrieve all assignments from the database
+        List<AssignmentDTO> allAssignments = getAllAssignments();
+        // Use the RecommendationService to get recommendations for the assignment
+        List<AssignmentDTO> recommendations = recommendationService.getRecommendationsByAssignmentId(assignmentId);
+
+        return recommendations;
+    }
+
+    // Implement the getAllAssignments method to fetch all assignments
+    public List<AssignmentDTO> getAllAssignments() {
+        List<Assignment> assignmentEntities = assignmentRepository.findAll();
+        return assignmentEntities.stream()
+                .map(assignmentMapper::assignmentToAssignmentDTO)
+                .collect(Collectors.toList());
+    }
+
 }
