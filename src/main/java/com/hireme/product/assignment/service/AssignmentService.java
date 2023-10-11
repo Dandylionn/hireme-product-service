@@ -5,6 +5,8 @@ import com.hireme.product.assignment.repository.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface AssignmentService {
     @Autowired
@@ -14,6 +16,7 @@ public interface AssignmentService {
     AssignmentDTO updateAssignment(Long assignmentId, AssignmentDTO assignmentDTO);
     void deleteAssignment(Long assignmentId);
     AssignmentDTO getAssignmentById(Long assignmentId);
-    // Add other assignment-related methods if necessary.
+    List<AssignmentDTO> getAssignmentRecommendations(Long assignmentId);
+    List<AssignmentDTO> getAllAssignments();
 
 }
