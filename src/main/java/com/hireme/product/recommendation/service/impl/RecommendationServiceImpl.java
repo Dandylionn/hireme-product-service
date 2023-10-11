@@ -2,16 +2,14 @@ package com.hireme.product.recommendation.service.impl;
 
 import com.hireme.product.assignment.dto.AssignmentDTO;
 import com.hireme.product.assignment.service.AssignmentService;
-import com.hireme.product.recommendation.dto.RecommendationDTO;
-import com.hireme.product.recommendation.entity.Recommendation;
 import com.hireme.product.recommendation.mapper.RecommendationMapper;
 import com.hireme.product.recommendation.repository.RecommendationRepository;
 import com.hireme.product.recommendation.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class RecommendationServiceImpl implements RecommendationService {

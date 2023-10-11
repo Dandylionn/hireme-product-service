@@ -25,6 +25,7 @@ com\hireme\product\ProductApplication.class
 com\hireme\recommendation\service\impl\ServiceImpl.class
 com\hireme\product\assignment\controller\AssignmentController$2.class
 com\hireme\product\assignment\entity\Assignment.class
+com\hireme\product\recommendation\service\impl\RecommendationServiceImpl.class
 com\hireme\product\assignment\service\impl\AssignmentServiceImpl.class
 com\hireme\product\payment\Resource\PaymentResource.class
 com\hireme\product\exception\InvalidStatusTransitionException.class

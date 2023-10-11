@@ -30,6 +30,7 @@ D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\h
 D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\hireme\product\ProductApplication.java
 D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\hireme\product\payment\dto\PaymentCheckout.java
 D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\hireme\product\recommendation\mapper\RecommendationMapper.java
+D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\hireme\product\recommendation\service\impl\RecommendationServiceImpl.java
 D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\hireme\product\exception\RecommendationServiceException.java
 D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\hireme\product\assignment\entity\Assignment.java
 D:\project\NUS_Project\hireme-backend\hireme-product-service\src\main\java\com\hireme\product\exception\InvalidStatusTransitionException.java

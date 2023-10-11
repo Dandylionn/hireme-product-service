@@ -8,26 +8,30 @@ import com.hireme.product.assignment.repository.AssignmentRepository;
 import com.hireme.product.assignment.service.AssignmentService;
 import com.hireme.product.recommendation.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
     private final AssignmentMapper assignmentMapper; // Inject the mapper
-
-    @Autowired
     private RecommendationService recommendationService; // Inject the RecommendationService
 
 
     @Autowired
-    public AssignmentServiceImpl(AssignmentRepository assignmentRepository, AssignmentMapper assignmentMapper) {
+    public AssignmentServiceImpl(AssignmentRepository assignmentRepository, AssignmentMapper assignmentMapper,
+                                 @Lazy RecommendationService recommendationService) {
+        //break circular dependency with Recommendation Service (Assignment Detail Page)
+
         this.assignmentRepository = assignmentRepository;
         this.assignmentMapper = assignmentMapper;
+        this.recommendationService = recommendationService;
     }
 
     @Override
