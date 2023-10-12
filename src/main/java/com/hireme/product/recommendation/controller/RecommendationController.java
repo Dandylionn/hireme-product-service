@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/recommendations")
@@ -28,8 +30,12 @@ public class RecommendationController {
     }
 
     @GetMapping("/assignment/{assignmentId}")
-    public ResponseEntity<List<AssignmentDTO>> getRecommendationsByAssignmentId(@PathVariable Long assignmentId) {
+    public ResponseEntity<Map<String, List<AssignmentDTO>>> getRecommendationsByAssignmentId(@PathVariable Long assignmentId) {
         List<AssignmentDTO> recommendations = recommendationService.getRecommendationsByAssignmentId(assignmentId);
-        return new ResponseEntity<>(recommendations, HttpStatus.OK);
+
+        Map<String, List<AssignmentDTO>> response = new HashMap<>();
+        response.put("recommendations", recommendations);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

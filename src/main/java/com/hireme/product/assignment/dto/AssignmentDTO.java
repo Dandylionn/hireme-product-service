@@ -31,8 +31,8 @@ public class AssignmentDTO implements Serializable {
     @JsonProperty("byUser")
     private String byUser;
 
-//    @JsonProperty("createdByUserId")
-//    private String a;
+    @JsonProperty("createdByUserId")
+    private String createdByUserId;
 
     @JsonProperty("tuitionDuration")
     private int tuitionDuration;

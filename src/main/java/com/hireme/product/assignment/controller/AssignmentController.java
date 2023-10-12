@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hireme.product.assignment.dto.AssignmentDTO;
-import com.hireme.product.assignment.service.AssignmentService;
+import com.hireme.product.assignment.service.*;
 //for swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,9 +51,11 @@ public class AssignmentController {
     (@RequestHeader("USER-ID") String userId,
      @RequestBody AssignmentDTO assignmentDTO) {
         // Check if the user is authorized to create the assignment based on the USER-ID header
-        if (!isValidUser(userId)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401 Unauthorized
-        }
+//        if (!isValidUser(userId)) {
+//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401 Unauthorized
+//        }
+        // Set the createdByUserId based on the USER-ID
+        assignmentDTO.setCreatedByUserId(userId);
         try {
             // Set the createdDateTime field to the current date and time
             assignmentDTO.setCreatedDateTime(LocalDateTime.now());
@@ -140,7 +142,7 @@ public class AssignmentController {
             @RequestBody AssignmentDTO assignmentDTO
     ) {
         // Check if the user is authorized to update the assignment based on the USER-ID header
-        if (!isValidUser(userId)) {
+        if (!isValidUser(userId, assignmentId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401 Unauthorized
         }
         try {
@@ -174,11 +176,11 @@ public class AssignmentController {
     @ApiResponse(responseCode = "204", description = "Assignment deleted successfully")
     @ApiResponse(responseCode = "404", description = "Assignment not found")
     //
-    public ResponseEntity<Void> deleteAssignment
+    public ResponseEntity<AssignmentService.ServiceResponse> deleteAssignment
     (@RequestHeader("USER-ID") String userId,
      @PathVariable Long assignmentId) {
         // Check if the user is authorized to delete the assignment based on the USER-ID header
-        if (!isValidUser(userId)) {
+        if (!isValidUser(userId, assignmentId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401 Unauthorized
         }
         // Fetch the assignment by ID from your service or repository
@@ -188,9 +190,14 @@ public class AssignmentController {
         }
         // Delete the assignment
         assignmentService.deleteAssignment(assignmentId);
+
+        // When the deletion is successful, the ServiceResponse with a success message will be returned
+        AssignmentService.ServiceResponse serviceResponse = assignmentService.deleteAssignment(assignmentId);
         resetAutoIncrement(); // Reset auto-increment after deletion
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        return new ResponseEntity<>(serviceResponse, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(serviceResponse, HttpStatus.OK);
     }
+
 
     // Endpoint to retrieve an assignment by ID
     @GetMapping("/{assignmentId}")
@@ -203,7 +210,7 @@ public class AssignmentController {
     (@RequestHeader("USER-ID") String userId,
      @PathVariable Long assignmentId) {
         // Check if the user is authorized to retrieve the assignment based on the USER-ID header
-        if (!isValidUser(userId)) {
+        if (!isValidUser(userId, assignmentId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401 Unauthorized
         }
         AssignmentDTO assignmentDTO = assignmentService.getAssignmentById(assignmentId);
@@ -225,12 +232,23 @@ public class AssignmentController {
     }
 
     // Helper method to check if the user is valid
-    private boolean isValidUser(String userId) {
+    private boolean isValidUser(String userId, Long assignmentId) {
         // validate the user
         // check if the userId corresponds to a logged-in user
         // If not, return false, user is not authorized
         // else, return true, user is valid.
-        return true;
+//        return true;
+
+        // Check if the user is authorized to update or delete the assignment.
+        // Compare the USER-ID in the request header with the createdByUserId of the assignment with the given assignmentId.
+        // For updating an assignment:
+        AssignmentDTO assignmentDTO = assignmentService.getAssignmentById(assignmentId);
+        if (assignmentDTO != null) {
+            return assignmentDTO.getCreatedByUserId().equals(userId);
+        }
+        // For deleting an assignment:
+        AssignmentDTO assignment = assignmentService.getAssignmentById(assignmentId);
+        return assignment != null && assignment.getCreatedByUserId().equals(userId);
     }
 
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-10-11T12:23:49+0800",
+    date = "2023-10-12T11:19:31+0800",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.2 (Oracle Corporation)"
 )
 @Component
@@ -26,6 +26,7 @@ public class AssignmentMapperImpl implements AssignmentMapper {
         assignmentDTO.setDescription( assignment.getDescription() );
         assignmentDTO.setLocation( assignment.getLocation() );
         assignmentDTO.setByUser( assignment.getByUser() );
+        assignmentDTO.setCreatedByUserId( assignment.getCreatedByUserId() );
         assignmentDTO.setTuitionDuration( assignment.getTuitionDuration() );
         assignmentDTO.setStatus( assignment.getStatus() );
         assignmentDTO.setCreatedDateTime( assignment.getCreatedDateTime() );
@@ -46,6 +47,7 @@ public class AssignmentMapperImpl implements AssignmentMapper {
         assignment.setDescription( assignmentDTO.getDescription() );
         assignment.setLocation( assignmentDTO.getLocation() );
         assignment.setByUser( assignmentDTO.getByUser() );
+        assignment.setCreatedByUserId( assignmentDTO.getCreatedByUserId() );
         assignment.setTuitionDuration( assignmentDTO.getTuitionDuration() );
         assignment.setStatus( assignmentDTO.getStatus() );
         assignment.setCreatedDateTime( assignmentDTO.getCreatedDateTime() );

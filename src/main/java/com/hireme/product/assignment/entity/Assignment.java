@@ -27,9 +27,10 @@ public class Assignment implements Serializable {
     @Column(name = "location", nullable = false, length = 100)
     private String location;
 
-    //from user service
-//    @Column(name = "createdByUserId", nullable = false, length = 45) // Store the user's ID or username
-//    private String createdByUserId;
+    @Column(name = "createdByUserId",
+//            nullable = false,
+            length = 45) // Store the user's ID or username
+    private String createdByUserId;
 
     @Column(name = "by_user", nullable = false, length = 45)
     private String byUser;
@@ -43,9 +44,4 @@ public class Assignment implements Serializable {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
-
-
-
-
-    // Constructors, getters, setters, and any other necessary methods
 }
