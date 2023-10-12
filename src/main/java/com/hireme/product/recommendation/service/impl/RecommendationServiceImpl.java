@@ -26,63 +26,115 @@ public class RecommendationServiceImpl implements RecommendationService {
         this.recommendationMapper = recommendationMapper;
         this.assignmentService = assignmentService;
     }
+///////////////////////////////////
+//    @Override
+//    public List<AssignmentDTO> getRecommendationsByAssignmentId(Long assignmentId) {
+//        // Retrieve the target assignment based on the provided assignmentId
+//        AssignmentDTO targetAssignment = assignmentService.getAssignmentById(assignmentId);
+//
+//        if (targetAssignment == null) {
+//            return new ArrayList<>(); // Handle the case where the target assignment is not found
+//        }
+//        // Extract subjects from the target assignment's title
+//        List<String> targetSubjects = extractSubjectsFromTitle(targetAssignment.getTitle());
+//
+//        // Retrieve all assignments from the database (you may want to limit this to relevant assignments)
+//        List<AssignmentDTO> allAssignments = assignmentService.getAllAssignments();
+//
+//        // Implement content-based filtering based on subject similarity
+//        List<AssignmentDTO> recommendations = new ArrayList<>();
+//
+//        for (AssignmentDTO assignment : allAssignments) {
+////            if (assignment.getAssignmentId() != assignmentId) { // Exclude the target assignment
+//            if (!Objects.equals(assignment.getAssignmentId(), assignmentId)) {
+//                List<String> assignmentSubjects = extractSubjectsFromTitle(assignment.getTitle());
+//
+//                // Calculate subject similarity using Jaccard similarity (for example)
+//                double jaccardSimilarity = calculateJaccardSimilarity(targetSubjects, assignmentSubjects);
+//
+//                // You can adjust the threshold for similarity based on your requirements
+//                if (jaccardSimilarity >= 0.5) {
+//                    recommendations.add(assignment);
+//                }
+//            }
+//        }
+//        return recommendations;
+//    }
+//    // Helper method to extract subjects from an assignment title using Apache OpenNLP
+//    private List<String> extractSubjectsFromTitle(String title) {
+//        List<String> subjects = new ArrayList<>();
+//
+//        // Implement subject extraction using OpenNLP or any other NLP library
+//        // assume the title contains subjects separated by commas
+//        String[] parts = title.split(",");
+//
+//        for (String part : parts) {
+//            subjects.add(part.trim()); // Trim to remove any leading/trailing spaces
+//        }
+//        return subjects;
+//    }
+//
+//    // Helper method to calculate Jaccard similarity between two sets of subjects
+//    private double calculateJaccardSimilarity(List<String> set1, List<String> set2) {
+//        // Implement Jaccard similarity calculation
+//        Set<String> union = new HashSet<>(set1);
+//        union.addAll(set2);
+//        Set<String> intersection = new HashSet<>(set1);
+//        intersection.retainAll(set2);
+//
+//        return (double) intersection.size() / union.size();
+//    }
+    //////////////////////
 
-    @Override
-    public List<AssignmentDTO> getRecommendationsByAssignmentId(Long assignmentId) {
-        // Retrieve the target assignment based on the provided assignmentId
-        AssignmentDTO targetAssignment = assignmentService.getAssignmentById(assignmentId);
+        @Override
+        public List<AssignmentDTO> getRecommendationsByAssignmentId(Long assignmentId) {
+            AssignmentDTO targetAssignment = assignmentService.getAssignmentById(assignmentId);
 
-        if (targetAssignment == null) {
-            return new ArrayList<>(); // Handle the case where the target assignment is not found
-        }
-        // Extract subjects from the target assignment's title
-        List<String> targetSubjects = extractSubjectsFromTitle(targetAssignment.getTitle());
+            if (targetAssignment == null) {
+                return new ArrayList<>();
+            }
 
-        // Retrieve all assignments from the database (you may want to limit this to relevant assignments)
-        List<AssignmentDTO> allAssignments = assignmentService.getAllAssignments();
+            List<String> targetKeywords = extractKeywordsFromTitle(targetAssignment.getTitle());
+            List<AssignmentDTO> allAssignments = assignmentService.getAllAssignments();
+            List<AssignmentDTO> recommendations = new ArrayList<>();
 
-        // Implement content-based filtering based on subject similarity
-        List<AssignmentDTO> recommendations = new ArrayList<>();
+            for (AssignmentDTO assignment : allAssignments) {
+                if (!Objects.equals(assignment.getAssignmentId(), assignmentId)) {
+                    List<String> assignmentKeywords = extractKeywordsFromTitle(assignment.getTitle());
 
-        for (AssignmentDTO assignment : allAssignments) {
-//            if (assignment.getAssignmentId() != assignmentId) { // Exclude the target assignment
-            if (!Objects.equals(assignment.getAssignmentId(), assignmentId)) {
-                List<String> assignmentSubjects = extractSubjectsFromTitle(assignment.getTitle());
-
-                // Calculate subject similarity using Jaccard similarity (for example)
-                double jaccardSimilarity = calculateJaccardSimilarity(targetSubjects, assignmentSubjects);
-
-                // You can adjust the threshold for similarity based on your requirements
-                if (jaccardSimilarity >= 0.5) {
-                    recommendations.add(assignment);
+                    // Check if there are common keywords between the target assignment and the current assignment
+                    if (haveCommonKeywords(targetKeywords, assignmentKeywords)) {
+                        recommendations.add(assignment);
+                    }
                 }
             }
+            return recommendations;
         }
-        return recommendations;
-    }
-    // Helper method to extract subjects from an assignment title using Apache OpenNLP
-    private List<String> extractSubjectsFromTitle(String title) {
-        List<String> subjects = new ArrayList<>();
 
-        // Implement subject extraction using OpenNLP or any other NLP library
-        // assume the title contains subjects separated by commas
-        String[] parts = title.split(",");
+        // Modify this method to extract keywords from the assignment title
+        private List<String> extractKeywordsFromTitle(String title) {
+            List<String> keywords = new ArrayList<>();
 
-        for (String part : parts) {
-            subjects.add(part.trim()); // Trim to remove any leading/trailing spaces
+            // This is a simplified example; you might use a more advanced NLP library for keyword extraction
+            // Here, we split the title into words and add them as keywords
+            String[] words = title.split(" ");
+            keywords.addAll(Arrays.asList(words));
+
+            return keywords;
         }
-        return subjects;
-    }
 
-    // Helper method to calculate Jaccard similarity between two sets of subjects
-    private double calculateJaccardSimilarity(List<String> set1, List<String> set2) {
-        // Implement Jaccard similarity calculation
-        Set<String> union = new HashSet<>(set1);
-        union.addAll(set2);
-        Set<String> intersection = new HashSet<>(set1);
-        intersection.retainAll(set2);
+        private boolean haveCommonKeywords(List<String> keywords1, List<String> keywords2) {
+            // Implement logic to check for common keywords (e.g., using set intersection)
+            Set<String> set1 = new HashSet<>(keywords1);
+            Set<String> set2 = new HashSet<>(keywords2);
 
-        return (double) intersection.size() / union.size();
-    }
+            // Calculate the intersection of sets
+            set1.retainAll(set2);
 
+            // Adjust the threshold based on your requirements
+            return set1.size() > 0;
+        }
 }
+
+
+

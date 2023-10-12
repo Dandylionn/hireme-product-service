@@ -57,10 +57,11 @@ public class AssignmentController {
         // Set the createdByUserId based on the USER-ID
         assignmentDTO.setCreatedByUserId(userId);
         try {
-            // Set the createdDateTime field to the current date and time
+            // Set the createdDateTime , updatedDateTime field to the current date and time
             assignmentDTO.setCreatedDateTime(LocalDateTime.now());
+            assignmentDTO.setUpdatedDateTime(LocalDateTime.now());
             // Format the createdDateTime field before creating the assignment
-            assignmentDTO.formatCreatedDateTime(); // Format the date and time
+            assignmentDTO.formatUpdatedDateTime(); // Format the date and time
 
             // Print the value getByUser() for debugging
             System.out.println("Tutor Name to Fetch: " + assignmentDTO.getByUser());
@@ -74,56 +75,74 @@ public class AssignmentController {
             headers.set("USER-ID", userId); // Set the USER-ID header
             HttpEntity<AssignmentDTO> request = new HttpEntity<>(assignmentDTO, headers);
 
-            // Make an HTTP GET request to the User microservice to fetch the tutor name
-            String tutorMicroserviceUrl = "http://localhost:8083/tutors/findByName/{tutorName}";
-            // Create a ParameterizedTypeReference to specify the expected response type
-            ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<String>() {};
-            ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    tutorMicroserviceUrl,
-                    HttpMethod.GET,
-                    null,
-                    responseType,
-                    assignmentDTO.getByUser()
-            );
-            // Check the HTTP status code of the response
-            if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                String tutorJsonResponse = responseEntity.getBody();
-                System.out.println("Response from User Microservice: " + tutorJsonResponse);
-
-                // Parse the JSON response as an array
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<JsonNode> jsonNodes = objectMapper.readValue(tutorJsonResponse, new TypeReference<List<JsonNode>>() {});
-
-                if (!jsonNodes.isEmpty()) {
-                    JsonNode firstNode = jsonNodes.get(0);
-                    // Check if the tutorName field exists
-                    if (firstNode.has("tutorName")) {
-                        // Extract the tutorName
-                        String retrievedTutorName = firstNode.get("tutorName").asText();
-                        System.out.println("Retrieved Name: " + retrievedTutorName);
-                        // Set the retrieved tutor name in the assignmentDTO
-                        assignmentDTO.setByUser(retrievedTutorName);
-
-                        // Create assignment
-                        AssignmentDTO createdAssignment = assignmentService.createAssignment(assignmentDTO);
-                        return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
-                    }
-                }
-            }
-            // Handle not found
-            String errorMessage = "Tutor's name not found in the JSON response from the User microservice";
-            AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
-            return new ResponseEntity<>(errorAssignment, HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (RestClientException e) {
+            //validation if tutor name is in tutor table (obsolete)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//            // Make an HTTP GET request to the User microservice to fetch the tutor name
+//            String tutorMicroserviceUrl = "http://localhost:8083/tutors/findByName/{tutorName}";
+//            // Create a ParameterizedTypeReference to specify the expected response type
+//            ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<String>() {};
+//            ResponseEntity<String> responseEntity = restTemplate.exchange(
+//                    tutorMicroserviceUrl,
+//                    HttpMethod.GET,
+//                    null,
+//                    responseType,
+//                    assignmentDTO.getByUser()
+//            );
+//            // Check the HTTP status code of the response
+//            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+//                String tutorJsonResponse = responseEntity.getBody();
+//                System.out.println("Response from User Microservice: " + tutorJsonResponse);
+//
+//                // Parse the JSON response as an array
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                List<JsonNode> jsonNodes = objectMapper.readValue(tutorJsonResponse, new TypeReference<List<JsonNode>>() {});
+//
+//                if (!jsonNodes.isEmpty()) {
+//                    JsonNode firstNode = jsonNodes.get(0);
+//                    // Check if the tutorName field exists
+//                    if (firstNode.has("tutorName")) {
+//                        // Extract the tutorName
+//                        String retrievedTutorName = firstNode.get("tutorName").asText();
+//                        System.out.println("Retrieved Name: " + retrievedTutorName);
+//                        // Set the retrieved tutor name in the assignmentDTO
+//                        assignmentDTO.setByUser(retrievedTutorName);
+//
+//                        // Create assignment
+//                        AssignmentDTO createdAssignment = assignmentService.createAssignment(assignmentDTO);
+//                        return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
+//                    }
+//                }
+//            }
+//            return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
+//            // Handle not found
+//            String errorMessage = "Tutor's name not found in the JSON response from the User microservice";
+//            AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
+//            return new ResponseEntity<>(errorAssignment, HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (RestClientException e) {
+//            // Handle the exception or return error response
+//            String errorMessage = "Error while communicating with the User microservice: " + e.getMessage();
+//            AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
+//            return new ResponseEntity<>(createErrorAssignmentDTO(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (IOException e) {
+//            // Handle JSON parsing errors
+//            String errorMessage = "Error parsing JSON response from the User microservice: " + e.getMessage();
+//            AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
+//            return new ResponseEntity<>(createErrorAssignmentDTO(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Create assignment
+            AssignmentDTO createdAssignment = assignmentService.createAssignment(assignmentDTO);
+            return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
+        }catch (RestClientException e) {
             // Handle the exception or return error response
             String errorMessage = "Error while communicating with the User microservice: " + e.getMessage();
             AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
-            return new ResponseEntity<>(createErrorAssignmentDTO(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (IOException e) {
-            // Handle JSON parsing errors
-            String errorMessage = "Error parsing JSON response from the User microservice: " + e.getMessage();
+            return new ResponseEntity<>(errorAssignment, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            // Handle other exceptions
+            String errorMessage = "Error creating assignment: " + e.getMessage();
             AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
-            return new ResponseEntity<>(createErrorAssignmentDTO(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errorAssignment, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -151,6 +170,8 @@ public class AssignmentController {
             headers.set("USER-ID", userId); // Set the USER-ID header
             HttpEntity<AssignmentDTO> request = new HttpEntity<>(assignmentDTO, headers);
 
+            assignmentDTO.setUpdatedDateTime(LocalDateTime.now());
+            assignmentDTO.formatUpdatedDateTime(); // Format the date and time
             AssignmentDTO updatedAssignment = assignmentService.updateAssignment(assignmentId, assignmentDTO);
             return new ResponseEntity<>(updatedAssignment, HttpStatus.OK);
 
