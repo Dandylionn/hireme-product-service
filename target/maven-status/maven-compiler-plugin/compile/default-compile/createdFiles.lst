@@ -17,6 +17,7 @@ com\hireme\product\recommendation\mapper\RecommendationMapperImpl.class
 com\hireme\product\assignment\serializers\LocalDateTimeSerializer.class
 com\hireme\product\exception\CustomResponseErrorHandler.class
 com\hireme\product\exception\ErrorResponse.class
+com\hireme\product\assignment\service\AssignmentService$ServiceResponse.class
 com\hireme\product\assignment\mapper\AssignmentMapperImpl.class
 com\hireme\product\configuration\SecurityConfiguration.class
 com\hireme\product\exception\AssignmentGlobalExceptionHandler.class

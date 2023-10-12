@@ -89,6 +89,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         existingAssignment.setDescription(assignmentDTO.getDescription());
         existingAssignment.setLocation(assignmentDTO.getLocation());
         existingAssignment.setByUser(assignmentDTO.getByUser());
+        existingAssignment.setCreatedByUserId(assignmentDTO.getCreatedByUserId());
         existingAssignment.setTuitionDuration(assignmentDTO.getTuitionDuration());
         existingAssignment.setStatus(assignmentDTO.getStatus());
         existingAssignment.setCreatedDateTime(assignmentDTO.getCreatedDateTime());
@@ -122,10 +123,10 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void deleteAssignment(Long assignmentId) {
-        // Implement the logic to delete an assignment from the database by its ID.
+    public ServiceResponse deleteAssignment(Long assignmentId) {
         // Delete the assignment by ID using the repository
         assignmentRepository.deleteById(assignmentId);
+        return new ServiceResponse("Assignment deleted successfully");
     }
 
     @Override
@@ -145,6 +146,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignmentDTO.setDescription(assignment.getDescription());
         assignmentDTO.setLocation(assignment.getLocation());
         assignmentDTO.setByUser(assignment.getByUser());
+        assignmentDTO.setCreatedByUserId(assignment.getCreatedByUserId());
         assignmentDTO.setTuitionDuration(assignment.getTuitionDuration());
         assignmentDTO.setStatus(assignment.getStatus());
         assignmentDTO.setCreatedDateTime(assignment.getCreatedDateTime());
