@@ -2,6 +2,7 @@ package com.hireme.product.assignment.service.impl;
 import com.hireme.product.assignment.dto.AssignmentDTO;
 import com.hireme.product.assignment.entity.Assignment;
 import com.hireme.product.assignment.enums.AssignmentStatus;
+import com.hireme.product.assignment.enums.TuitionFrequency;
 import com.hireme.product.exception.InvalidStatusTransitionException;
 import com.hireme.product.assignment.mapper.AssignmentMapper;
 import com.hireme.product.assignment.repository.AssignmentRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -21,7 +23,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
     private final AssignmentMapper assignmentMapper; // Inject the mapper
-    private RecommendationService recommendationService; // Inject the RecommendationService
+    private final RecommendationService recommendationService; // Inject the RecommendationService
 
 
     @Autowired
@@ -81,18 +83,24 @@ public class AssignmentServiceImpl implements AssignmentService {
         // Check if the transition is allowed based on rules
         if (!isStatusTransitionAllowed(existingAssignment.getStatus(), assignmentDTO.getStatus())) {
             throw new InvalidStatusTransitionException("Invalid status transition");
-
         }
 
+
         // Update the fields of the existing assignment with data from assignmentDTO (w/o Mapper)
+        existingAssignment.setAssignmentType(assignmentDTO.getAssignmentType());
+        existingAssignment.setSubjectLevel(assignmentDTO.getSubjectLevel());
+        existingAssignment.setSubject(assignmentDTO.getSubject());
         existingAssignment.setTitle(assignmentDTO.getTitle());
         existingAssignment.setDescription(assignmentDTO.getDescription());
         existingAssignment.setLocation(assignmentDTO.getLocation());
         existingAssignment.setByUser(assignmentDTO.getByUser());
         existingAssignment.setCreatedByUserId(assignmentDTO.getCreatedByUserId());
         existingAssignment.setTuitionDuration(assignmentDTO.getTuitionDuration());
+        existingAssignment.setTuitionFrequencies(assignmentDTO.getTuitionFrequencies());
+        existingAssignment.setPrice(assignmentDTO.getPrice());
         existingAssignment.setStatus(assignmentDTO.getStatus());
         existingAssignment.setCreatedDateTime(assignmentDTO.getCreatedDateTime());
+        existingAssignment.setUpdatedDateTime(assignmentDTO.getUpdatedDateTime());
 
 
 //        // Set the status based on the value in assignmentDTO
@@ -139,19 +147,29 @@ public class AssignmentServiceImpl implements AssignmentService {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with id: " + assignmentId));
 
+
         // Map the retrieved Assignment entity to AssignmentDTO
         AssignmentDTO assignmentDTO = new AssignmentDTO();
         assignmentDTO.setAssignmentId(assignment.getAssignmentId());
+        assignmentDTO.setAssignmentType(assignment.getAssignmentType());
+        assignmentDTO.setSubjectLevel(assignment.getSubjectLevel());
+        assignmentDTO.setSubject(assignment.getSubject());
         assignmentDTO.setTitle(assignment.getTitle());
         assignmentDTO.setDescription(assignment.getDescription());
         assignmentDTO.setLocation(assignment.getLocation());
         assignmentDTO.setByUser(assignment.getByUser());
         assignmentDTO.setCreatedByUserId(assignment.getCreatedByUserId());
         assignmentDTO.setTuitionDuration(assignment.getTuitionDuration());
+        assignmentDTO.setTuitionFrequencies(assignment.getTuitionFrequencies());
+        assignmentDTO.setPrice(assignment.getPrice());
         assignmentDTO.setStatus(assignment.getStatus());
         assignmentDTO.setCreatedDateTime(assignment.getCreatedDateTime());
+        assignmentDTO.setUpdatedDateTime(assignment.getUpdatedDateTime());
 
         return assignmentDTO;
+
+        //shortcut
+//        return assignmentMapper.assignmentToAssignmentDTO(assignment);
     }
     @Override
     public List<AssignmentDTO> getAssignmentRecommendations(Long assignmentId) {
