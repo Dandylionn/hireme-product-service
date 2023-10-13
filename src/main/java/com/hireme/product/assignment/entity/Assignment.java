@@ -57,6 +57,7 @@ public class Assignment implements Serializable {
     @Column(name = "tuition_duration")
     private String tuitionDuration;
 
+
     @ElementCollection(targetClass = TuitionFrequency.class)
     @CollectionTable(name = "tuition_frequencies", joinColumns = @JoinColumn(name = "assignment_id"))
     @Column(name = "tuition_frequency")
@@ -71,9 +72,10 @@ public class Assignment implements Serializable {
     @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
 
-    @Column(name = "createdDateTime")
+    @Column(name = "created_date_time")
     private LocalDateTime createdDateTime;
 
-    @Column(name = "updatedDateTime")
+    @Column(name = "updated_date_time")
     private LocalDateTime updatedDateTime;
+
 }

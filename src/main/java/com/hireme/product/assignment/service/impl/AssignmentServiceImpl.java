@@ -73,10 +73,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     public AssignmentDTO updateAssignment(Long assignmentId, AssignmentDTO assignmentDTO) {
-        // Implement the logic to update an assignment in the database.
         // Fetch the assignment by ID, update its fields with data from assignmentDTO, and save it.
-        // Return the updated AssignmentDTO.
-
         // Fetch the assignment by ID from the repository
         Assignment existingAssignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with id: " + assignmentId));
@@ -102,10 +99,6 @@ public class AssignmentServiceImpl implements AssignmentService {
         existingAssignment.setCreatedDateTime(assignmentDTO.getCreatedDateTime());
         existingAssignment.setUpdatedDateTime(assignmentDTO.getUpdatedDateTime());
 
-
-//        // Set the status based on the value in assignmentDTO
-//        existingAssignment.setStatus(assignmentDTO.getStatus());
-
         // Save the updated Assignment entity
         Assignment updatedAssignment = assignmentRepository.save(existingAssignment);
 
@@ -121,13 +114,6 @@ public class AssignmentServiceImpl implements AssignmentService {
         AssignmentDTO updatedAssignmentDTO = AssignmentMapper.INSTANCE.assignmentToAssignmentDTO(updatedAssignment);
 
         return updatedAssignmentDTO;
-    }
-    // Define a method to check if the status transition is allowed
-    private boolean isStatusTransitionAllowed(AssignmentStatus currentStatus, AssignmentStatus newStatus) {
-        // Implement rules for status transitions here
-        // allow transitions from OPEN to IN_PROGRESS and from IN_PROGRESS to COMPLETED.
-        return (currentStatus == AssignmentStatus.OPEN && newStatus == AssignmentStatus.IN_PROGRESS) ||
-                (currentStatus == AssignmentStatus.IN_PROGRESS && newStatus == AssignmentStatus.COMPLETED);
     }
 
     @Override
@@ -192,6 +178,16 @@ public class AssignmentServiceImpl implements AssignmentService {
         return assignmentEntities.stream()
                 .map(assignmentMapper::assignmentToAssignmentDTO)
                 .collect(Collectors.toList());
+    }
+
+    // Define a method to check if the status transition is allowed
+    private boolean isStatusTransitionAllowed(AssignmentStatus currentStatus, AssignmentStatus newStatus) {
+        // Implement rules for status transitions here
+        // Allow updates within the same status or transitions from OPEN to IN_PROGRESS
+        // and from IN_PROGRESS to COMPLETED.
+        return (currentStatus == newStatus) ||
+                (currentStatus == AssignmentStatus.OPEN && newStatus == AssignmentStatus.IN_PROGRESS) ||
+                (currentStatus == AssignmentStatus.IN_PROGRESS && newStatus == AssignmentStatus.COMPLETED);
     }
 
 }
