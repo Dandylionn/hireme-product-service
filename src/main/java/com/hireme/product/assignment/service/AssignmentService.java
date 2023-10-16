@@ -1,6 +1,9 @@
 package com.hireme.product.assignment.service;
 
 import com.hireme.product.assignment.dto.AssignmentDTO;
+import com.hireme.product.assignment.enums.AssignmentType;
+import com.hireme.product.assignment.enums.Subject;
+import com.hireme.product.assignment.enums.SubjectLevel;
 import com.hireme.product.assignment.repository.AssignmentRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,14 @@ public interface AssignmentService {
     AssignmentDTO getAssignmentById(Long assignmentId);
     List<AssignmentDTO> getAssignmentRecommendations(Long assignmentId);
     List<AssignmentDTO> getAllAssignments();
+
+    //only assignment type
+//    List<AssignmentDTO> getAssignmentsByType(AssignmentType type);
+
+    List<AssignmentDTO> getAssignmentsByTypeAndSubjectsAndLevel(AssignmentType type,
+                                                                List<Subject> subjects, SubjectLevel subjectLevel);
+
+
 
     //for deleteAssignment Message
     public class ServiceResponse {

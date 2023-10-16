@@ -5,6 +5,5 @@ public enum AssignmentStatus {
     IN_PROGRESS,  // Assignment is in progress
     COMPLETED,    // Assignment has been completed
     EXPIRED       // Assignment has expired
-
 }
 

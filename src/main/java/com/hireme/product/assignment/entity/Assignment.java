@@ -78,4 +78,7 @@ public class Assignment implements Serializable {
     @Column(name = "updated_date_time")
     private LocalDateTime updatedDateTime;
 
+    @Column(name = "expiration_date")
+    private LocalDateTime expirationDate;
+
 }

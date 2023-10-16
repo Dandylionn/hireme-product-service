@@ -29,6 +29,7 @@ public interface AssignmentMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "createdDateTime", source = "createdDateTime")
     @Mapping(target = "updatedDateTime", source = "updatedDateTime")
+    @Mapping(target = "expirationDate", source = "expirationDate")
     AssignmentDTO assignmentToAssignmentDTO(Assignment assignment);
 
     @Mapping(target = "assignmentId", source = "assignmentId")
@@ -46,6 +47,7 @@ public interface AssignmentMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "createdDateTime", source = "createdDateTime")
     @Mapping(target = "updatedDateTime", source = "updatedDateTime")
+    @Mapping(target = "expirationDate", source = "expirationDate")
     Assignment assignmentDTOToAssignment(AssignmentDTO assignmentDTO);
 
 }

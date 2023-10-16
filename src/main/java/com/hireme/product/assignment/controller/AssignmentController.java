@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hireme.product.assignment.dto.AssignmentDTO;
+import com.hireme.product.assignment.enums.AssignmentType;
+import com.hireme.product.assignment.enums.Subject;
+import com.hireme.product.assignment.enums.SubjectLevel;
 import com.hireme.product.assignment.service.*;
 //for swagger
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +30,6 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/assignments")
 public class AssignmentController {
-
     private final AssignmentService assignmentService;
     private final JdbcTemplate jdbcTemplate;
 
@@ -40,6 +42,37 @@ public class AssignmentController {
         this.jdbcTemplate = jdbcTemplate;
         this.restTemplate = restTemplate;
     }
+
+    //for swagger
+    @Operation(summary = "get all assignments")
+    @ApiResponse(responseCode = "201", description = "Retrieved Assignments successfully")
+    //
+    @PostMapping("/get-all")
+    public List<AssignmentDTO> getAllAssignments(@RequestHeader("USER-ID") String userId) {
+        List<AssignmentDTO> assignments = assignmentService.getAllAssignments();
+        return assignments;
+    }
+
+    //filter assignments by both AssignmentType, subjects and subject_level
+    //for swagger
+    @Operation(summary = "get filtered assignments")
+    @ApiResponse(responseCode = "201", description = "Retrieved Filtered Assignments successfully")
+    //
+    @PostMapping("/filter")
+    public List<AssignmentDTO> getAssignmentsByTypeAndSubjectsAndLevel(
+            @RequestHeader("USER-ID") String userId,
+            @RequestParam AssignmentType type,
+            @RequestParam List<Subject> subjects,
+            @RequestParam SubjectLevel subjectLevel) {
+        List<AssignmentDTO> assignments = assignmentService.getAssignmentsByTypeAndSubjectsAndLevel(type, subjects, subjectLevel);
+        return assignments;
+    }
+//    @PostMapping("/assignments-by-type/{type}")
+//    public List<AssignmentDTO> getAssignmentsByType(@RequestHeader("USER-ID") String userId,
+//                                                      @PathVariable AssignmentType type) {
+//        List<AssignmentDTO> assignments = assignmentService.getAssignmentsByType(type);
+//        return assignments;
+//    }
 
     // Endpoint to create a new assignment
     @PostMapping
@@ -57,14 +90,21 @@ public class AssignmentController {
         // Set the createdByUserId based on the USER-ID
         assignmentDTO.setCreatedByUserId(userId);
         try {
-            // Set the createdDateTime , updatedDateTime field to the current date and time
+            // Set the createdDateTime , updatedDateTime, expirationDate field to the current date and time
+            LocalDateTime currentDateTime = LocalDateTime.now();
             assignmentDTO.setCreatedDateTime(LocalDateTime.now());
             assignmentDTO.setUpdatedDateTime(LocalDateTime.now());
+
+            // Calculate the expiration date as 90 days later from the updatedDateTime
+            LocalDateTime expirationDate = currentDateTime.plusDays(90);
+            assignmentDTO.setExpirationDate(expirationDate);
+
             // Format the createdDateTime field before creating the assignment
             assignmentDTO.formatUpdatedDateTime(); // Format the date and time
+            assignmentDTO.formatExpirationDate(); // Format the date and time
 
             // Print the value getByUser() for debugging
-            System.out.println("Tutor Name to Fetch: " + assignmentDTO.getByUser());
+            System.out.println("Name to Fetch: " + assignmentDTO.getByUser());
             // Truncate the 'byUser' field if its length exceeds 100 characters
             if (assignmentDTO.getByUser() != null && assignmentDTO.getByUser().length() > 100) {
                 assignmentDTO.setByUser(assignmentDTO.getByUser().substring(0, 100));
@@ -75,62 +115,7 @@ public class AssignmentController {
             headers.set("USER-ID", userId); // Set the USER-ID header
             HttpEntity<AssignmentDTO> request = new HttpEntity<>(assignmentDTO, headers);
 
-            //validation if tutor name is in tutor table (obsolete)
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//            // Make an HTTP GET request to the User microservice to fetch the tutor name
-//            String tutorMicroserviceUrl = "http://localhost:8083/tutors/findByName/{tutorName}";
-//            // Create a ParameterizedTypeReference to specify the expected response type
-//            ParameterizedTypeReference<String> responseType = new ParameterizedTypeReference<String>() {};
-//            ResponseEntity<String> responseEntity = restTemplate.exchange(
-//                    tutorMicroserviceUrl,
-//                    HttpMethod.GET,
-//                    null,
-//                    responseType,
-//                    assignmentDTO.getByUser()
-//            );
-//            // Check the HTTP status code of the response
-//            if (responseEntity.getStatusCode() == HttpStatus.OK) {
-//                String tutorJsonResponse = responseEntity.getBody();
-//                System.out.println("Response from User Microservice: " + tutorJsonResponse);
-//
-//                // Parse the JSON response as an array
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                List<JsonNode> jsonNodes = objectMapper.readValue(tutorJsonResponse, new TypeReference<List<JsonNode>>() {});
-//
-//                if (!jsonNodes.isEmpty()) {
-//                    JsonNode firstNode = jsonNodes.get(0);
-//                    // Check if the tutorName field exists
-//                    if (firstNode.has("tutorName")) {
-//                        // Extract the tutorName
-//                        String retrievedTutorName = firstNode.get("tutorName").asText();
-//                        System.out.println("Retrieved Name: " + retrievedTutorName);
-//                        // Set the retrieved tutor name in the assignmentDTO
-//                        assignmentDTO.setByUser(retrievedTutorName);
-//
-//                        // Create assignment
-//                        AssignmentDTO createdAssignment = assignmentService.createAssignment(assignmentDTO);
-//                        return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
-//                    }
-//                }
-//            }
-//            return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
-//            // Handle not found
-//            String errorMessage = "Tutor's name not found in the JSON response from the User microservice";
-//            AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
-//            return new ResponseEntity<>(errorAssignment, HttpStatus.INTERNAL_SERVER_ERROR);
-//        } catch (RestClientException e) {
-//            // Handle the exception or return error response
-//            String errorMessage = "Error while communicating with the User microservice: " + e.getMessage();
-//            AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
-//            return new ResponseEntity<>(createErrorAssignmentDTO(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
-//        } catch (IOException e) {
-//            // Handle JSON parsing errors
-//            String errorMessage = "Error parsing JSON response from the User microservice: " + e.getMessage();
-//            AssignmentDTO errorAssignment = createErrorAssignmentDTO(errorMessage);
-//            return new ResponseEntity<>(createErrorAssignmentDTO(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Create assignment
+             // Create assignment
             AssignmentDTO createdAssignment = assignmentService.createAssignment(assignmentDTO);
             return new ResponseEntity<>(createdAssignment, HttpStatus.CREATED);
         }catch (RestClientException e) {
@@ -170,8 +155,13 @@ public class AssignmentController {
             headers.set("USER-ID", userId); // Set the USER-ID header
             HttpEntity<AssignmentDTO> request = new HttpEntity<>(assignmentDTO, headers);
 
+            LocalDateTime currentDateTime = LocalDateTime.now();
             assignmentDTO.setUpdatedDateTime(LocalDateTime.now());
             assignmentDTO.formatUpdatedDateTime(); // Format the date and time
+            // Calculate the expiration date as 90 days later from the updatedDateTime
+            LocalDateTime expirationDate = currentDateTime.plusDays(90);
+            assignmentDTO.setExpirationDate(expirationDate);
+
             AssignmentDTO updatedAssignment = assignmentService.updateAssignment(assignmentId, assignmentDTO);
             return new ResponseEntity<>(updatedAssignment, HttpStatus.OK);
 

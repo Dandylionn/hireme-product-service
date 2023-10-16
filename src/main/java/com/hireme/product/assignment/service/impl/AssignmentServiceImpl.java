@@ -1,8 +1,7 @@
 package com.hireme.product.assignment.service.impl;
 import com.hireme.product.assignment.dto.AssignmentDTO;
 import com.hireme.product.assignment.entity.Assignment;
-import com.hireme.product.assignment.enums.AssignmentStatus;
-import com.hireme.product.assignment.enums.TuitionFrequency;
+import com.hireme.product.assignment.enums.*;
 import com.hireme.product.exception.InvalidStatusTransitionException;
 import com.hireme.product.assignment.mapper.AssignmentMapper;
 import com.hireme.product.assignment.repository.AssignmentRepository;
@@ -10,8 +9,10 @@ import com.hireme.product.assignment.service.AssignmentService;
 import com.hireme.product.recommendation.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -98,6 +99,8 @@ public class AssignmentServiceImpl implements AssignmentService {
         existingAssignment.setStatus(assignmentDTO.getStatus());
         existingAssignment.setCreatedDateTime(assignmentDTO.getCreatedDateTime());
         existingAssignment.setUpdatedDateTime(assignmentDTO.getUpdatedDateTime());
+        existingAssignment.setExpirationDate(assignmentDTO.getExpirationDate());
+
 
         // Save the updated Assignment entity
         Assignment updatedAssignment = assignmentRepository.save(existingAssignment);
@@ -151,6 +154,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignmentDTO.setStatus(assignment.getStatus());
         assignmentDTO.setCreatedDateTime(assignment.getCreatedDateTime());
         assignmentDTO.setUpdatedDateTime(assignment.getUpdatedDateTime());
+        assignmentDTO.setExpirationDate(assignment.getExpirationDate());
 
         return assignmentDTO;
 
@@ -189,5 +193,49 @@ public class AssignmentServiceImpl implements AssignmentService {
                 (currentStatus == AssignmentStatus.OPEN && newStatus == AssignmentStatus.IN_PROGRESS) ||
                 (currentStatus == AssignmentStatus.IN_PROGRESS && newStatus == AssignmentStatus.COMPLETED);
     }
+
+    //obsolete
+//    @Override
+//    public List<AssignmentDTO> getAssignmentsByType(AssignmentType type) {
+//        // Use the repository to fetch assignments by status
+//        List<Assignment> assignments = assignmentRepository.findByAssignmentType(type);
+//
+//        // Map the entities to DTOs and return the list
+//        return assignments.stream()
+//                .map(assignmentMapper::assignmentToAssignmentDTO)
+//                .collect(Collectors.toList());
+//    }
+
+    @Override
+    public List<AssignmentDTO> getAssignmentsByTypeAndSubjectsAndLevel(AssignmentType type,
+                                                                       List<Subject> subjects, SubjectLevel subjectLevel) {
+        // Retrieve assignments by type from the repository
+        List<Assignment> assignmentsByType = assignmentRepository.findByAssignmentType(type);
+
+        // Filter assignments by subjects and subjectLevel
+        List<AssignmentDTO> filteredAssignments = assignmentsByType.stream()
+                .filter(assignment -> subjects.contains(assignment.getSubject()) && subjectLevel.equals(assignment.getSubjectLevel()))
+                .map(assignmentMapper::assignmentToAssignmentDTO)
+                .collect(Collectors.toList());
+
+        return filteredAssignments;
+    }
+
+    @Scheduled(fixedRate = 86400000) // Run once a day (24 hours)
+    public void updateAssignmentStatusBasedOnExpiration() {
+        List<Assignment> assignments = assignmentRepository.findAll();
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        for (Assignment assignment : assignments) {
+            if (assignment.getUpdatedDateTime() != null) {
+                LocalDateTime expirationDate = assignment.getUpdatedDateTime().plusDays(90);
+                if (currentDate.isAfter(expirationDate)) {
+                    assignment.setStatus(AssignmentStatus.EXPIRED);
+                }
+            }
+        }
+    }
+
+
 
 }
