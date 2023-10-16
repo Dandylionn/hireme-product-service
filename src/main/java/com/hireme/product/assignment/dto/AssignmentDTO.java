@@ -65,6 +65,10 @@ public class AssignmentDTO implements Serializable {
     @JsonProperty("updatedDateTime")
     private LocalDateTime updatedDateTime;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonProperty("expirationDate")
+    private LocalDateTime expirationDate;
+
     public String formatCreatedDateTime() {
         if (createdDateTime != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -76,6 +80,14 @@ public class AssignmentDTO implements Serializable {
         if (updatedDateTime != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             return updatedDateTime.format(formatter);
+        }
+        return null;
+    }
+
+    public String formatExpirationDate() {
+        if (expirationDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return expirationDate.format(formatter);
         }
         return null;
     }

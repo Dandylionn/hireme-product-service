@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-10-13T11:55:04+0800",
+    date = "2023-10-16T13:29:16+0800",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.2 (Oracle Corporation)"
 )
 @Component
@@ -42,6 +42,7 @@ public class AssignmentMapperImpl implements AssignmentMapper {
         assignmentDTO.setStatus( assignment.getStatus() );
         assignmentDTO.setCreatedDateTime( assignment.getCreatedDateTime() );
         assignmentDTO.setUpdatedDateTime( assignment.getUpdatedDateTime() );
+        assignmentDTO.setExpirationDate( assignment.getExpirationDate() );
 
         return assignmentDTO;
     }
@@ -72,6 +73,7 @@ public class AssignmentMapperImpl implements AssignmentMapper {
         assignment.setStatus( assignmentDTO.getStatus() );
         assignment.setCreatedDateTime( assignmentDTO.getCreatedDateTime() );
         assignment.setUpdatedDateTime( assignmentDTO.getUpdatedDateTime() );
+        assignment.setExpirationDate( assignmentDTO.getExpirationDate() );
 
         return assignment;
     }

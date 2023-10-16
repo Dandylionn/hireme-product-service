@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 //for swagger
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 //
 @ComponentScan(basePackages = "com.hireme.product")
 @EnableJpaRepositories
+@EnableScheduling
 public class ProductApplication {
 	@Value("${stripe.secret-key}")
 	String secretKey;
