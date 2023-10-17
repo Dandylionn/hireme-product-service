@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     List<Assignment> findByStatus(String status);
     List<Assignment> findByAssignmentType(AssignmentType type);
+
+    Optional<Assignment> findByAssignmentId(Long id);
 }
