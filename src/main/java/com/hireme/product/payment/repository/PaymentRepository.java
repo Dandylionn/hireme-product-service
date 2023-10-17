@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Repository
-public interface Repository extends JpaRepository<Payment, String> {
+public interface PaymentRepository extends JpaRepository<Payment, String> {
     Optional<Payment> getBySessionId(String sessionId);
 
     List<Payment> getByUserIdOrderByDteTimeCrDesc(String userId);

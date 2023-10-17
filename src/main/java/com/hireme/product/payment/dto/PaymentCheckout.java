@@ -16,4 +16,5 @@ public class PaymentCheckout {
     private String cancelUrl;
     private Long amt;
 
+    private String assignmentId;
 }

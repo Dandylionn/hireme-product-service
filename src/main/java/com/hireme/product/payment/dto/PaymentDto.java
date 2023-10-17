@@ -1,10 +1,8 @@
 package com.hireme.product.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
@@ -17,6 +15,9 @@ public class PaymentDto {
 
     @JsonProperty( "userId")
     private Long userId;
+
+    @JsonProperty( "assignmentId")
+    private Long assignmentId;
 
     @JsonProperty( "sessionId")
     private String sessionId;

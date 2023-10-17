@@ -1,5 +1,6 @@
 package com.hireme.product.payment.Entity;
 
+import com.hireme.product.payment.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,10 +22,17 @@ public class Payment {
     private Long id;
 
     @Column(name = "USER_ID")
-    private Long userId;
+    private String userId;
 
     @Column(name = "SESSION_ID")
     private String sessionId;
+
+    @Column(name = "ASSIGNMENT_id")
+    private String assignmentId;
+
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
 
     @Column(name = "TOTAL_PRICE")
     private Long totalPrice;
