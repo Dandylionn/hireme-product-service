@@ -5,10 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.StandardReflectionParameterNameDiscoverer;
-
 @Configuration
 @EnableWebMvc
 public class SwaggerConfig {
@@ -17,6 +13,14 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("assignments-api")
                 .pathsToMatch("/assignments/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi paymentApi() {
+        return GroupedOpenApi.builder()
+                .group("payment-api")
+                .pathsToMatch("/api/payments/**")
                 .build();
     }
 
