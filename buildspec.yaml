@@ -7,11 +7,11 @@ phases:
   build:
     commands:
       - echo Build completed on `date`
-      - mvn package
+      - mvn clean package
   post_build:
     commands:
       - echo Build completed on `date`
 artifacts:
   files:
-    - target/*.jar
-  discard-paths: yes
+    - '**/*'
+  base-directory: 'target/aws-build'
