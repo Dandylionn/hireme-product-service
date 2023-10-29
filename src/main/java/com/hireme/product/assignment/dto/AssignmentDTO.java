@@ -2,6 +2,7 @@ package com.hireme.product.assignment.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.hireme.product.assignment.enums.*;
@@ -59,14 +60,17 @@ public class AssignmentDTO implements Serializable {
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonProperty("createdDateTime")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDateTime;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonProperty("updatedDateTime")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedDateTime;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonProperty("expirationDate")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expirationDate;
 
     public String formatCreatedDateTime() {
@@ -91,10 +95,5 @@ public class AssignmentDTO implements Serializable {
         }
         return null;
     }
-
-
-
-
-
 }
 

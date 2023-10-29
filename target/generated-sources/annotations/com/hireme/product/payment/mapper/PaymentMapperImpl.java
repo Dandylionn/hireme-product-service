@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-10-16T13:29:15+0800",
+    date = "2023-10-29T23:14:51+0800",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.2 (Oracle Corporation)"
 )
 @Component
@@ -22,7 +22,12 @@ public class PaymentMapperImpl implements PaymentMapper {
         PaymentDto paymentDto = new PaymentDto();
 
         paymentDto.setId( payment.getId() );
-        paymentDto.setUserId( payment.getUserId() );
+        if ( payment.getUserId() != null ) {
+            paymentDto.setUserId( Long.parseLong( payment.getUserId() ) );
+        }
+        if ( payment.getAssignmentId() != null ) {
+            paymentDto.setAssignmentId( Long.parseLong( payment.getAssignmentId() ) );
+        }
         paymentDto.setSessionId( payment.getSessionId() );
         paymentDto.setTotalPrice( payment.getTotalPrice() );
         paymentDto.setDteTimeCr( payment.getDteTimeCr() );
