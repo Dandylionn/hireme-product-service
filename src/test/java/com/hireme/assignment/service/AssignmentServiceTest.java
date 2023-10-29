@@ -1,10 +1,10 @@
 package com.hireme.assignment.service;
 
-import com.hireme.assignment.dto.AssignmentDTO;
-import com.hireme.assignment.entity.Assignment;
-import com.hireme.assignment.enums.AssignmentStatus;
-import com.hireme.assignment.repository.AssignmentRepository;
-import com.hireme.assignment.service.impl.AssignmentServiceImpl;
+import com.hireme.product.assignment.dto.AssignmentDTO;
+import com.hireme.product.assignment.entity.Assignment;
+import com.hireme.product.assignment.enums.AssignmentStatus;
+import com.hireme.product.assignment.repository.AssignmentRepository;
+import com.hireme.product.assignment.service.impl.AssignmentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

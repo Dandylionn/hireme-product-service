@@ -1,12 +1,9 @@
 com\hireme\product\payment\dto\PaymentDto.class
 com\hireme\product\payment\Entity\Payment.class
-com\hireme\recommendation\repository\impl\RepositoryImpl.class
-com\hireme\product\payment\service\Service.class
 com\hireme\product\payment\dto\PaymentCheckout.class
-com\hireme\product\payment\repository\Repository.class
+com\hireme\product\payment\repository\PaymentRepository.class
 com\hireme\product\recommendation\repository\RecommendationRepository.class
 com\hireme\product\recommendation\dto\RecommendationDTO.class
-com\hireme\product\payment\service\impl\ServiceImpl.class
 com\hireme\product\recommendation\controller\RecommendationController.class
 com\hireme\product\recommendation\service\RecommendationService.class
 com\hireme\product\exception\RecommendationGlobalExceptionHandler.class
@@ -21,8 +18,8 @@ com\hireme\product\assignment\mapper\AssignmentMapperImpl.class
 com\hireme\product\configuration\SecurityConfiguration.class
 com\hireme\product\exception\AssignmentGlobalExceptionHandler.class
 com\hireme\product\assignment\service\AssignmentService.class
+com\hireme\product\payment\service\PaymentService.class
 com\hireme\product\ProductApplication.class
-com\hireme\recommendation\service\impl\ServiceImpl.class
 com\hireme\product\assignment\entity\Assignment.class
 com\hireme\product\recommendation\service\impl\RecommendationServiceImpl.class
 com\hireme\product\assignment\service\impl\AssignmentServiceImpl.class
@@ -42,5 +39,7 @@ com\hireme\product\recommendation\entity\Recommendation.class
 com\hireme\product\exception\RecommendationServiceException.class
 com\hireme\product\assignment\service\impl\ResourceNotFoundException.class
 com\hireme\product\payment\mapper\PaymentMapper.class
+com\hireme\product\payment\service\impl\PaymentServiceImpl.class
+com\hireme\product\payment\enums\PaymentStatus.class
 com\hireme\product\assignment\enums\SubjectLevel.class
 com\hireme\product\configuration\RestTemplateConfig.class
