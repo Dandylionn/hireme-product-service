@@ -77,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void successPayment(String sessionId) {
+    public String successPayment(String sessionId) {
         try {
              Session checkout = Session.retrieve(sessionId);
              if("paid".equals(checkout.getPaymentStatus())){
@@ -102,11 +102,12 @@ public class PaymentServiceImpl implements PaymentService {
                      payment.setUserId(checkout.getClientReferenceId());
                      paymentRepository.save(payment);
                  });
-
+                return "paid";
              }
         } catch (StripeException e) {
             e.printStackTrace();
         }
+        return "not paid";
     }
 
     @Override
