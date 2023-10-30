@@ -5,11 +5,13 @@ import com.hireme.product.assignment.repository.AssignmentRepository;
 import com.hireme.product.payment.Entity.Payment;
 import com.hireme.product.payment.dto.PaymentCheckout;
 import com.hireme.product.payment.dto.PaymentDto;
+import com.hireme.product.payment.mapper.PaymentMapper;
 import com.hireme.product.payment.repository.PaymentRepository;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -30,6 +32,9 @@ class PaymentServiceImplTest {
 
     @InjectMocks
     private PaymentServiceImpl paymentService;
+
+    @Mock
+    private PaymentMapper paymentMapper;
 
     @Test
     void testCheckout() throws StripeException {
@@ -81,15 +86,17 @@ class PaymentServiceImplTest {
     @Test
     void testGetPastPayment() {
         // Mocked userId
-        String userId = "user123";
+        String userId = "1";
 
         // Mocking paymentRepository methods
         Mockito.when(paymentRepository.getByUserIdOrderByDteTimeCrDesc(userId)).thenReturn(new ArrayList<>());
+        Mockito.when(paymentMapper.toDto(ArgumentMatchers.any())).thenReturn(new PaymentDto());
 
         // Perform the test
         List<PaymentDto> pastPayments = paymentService.getPastPayment(userId);
 
         // Assertions or verifications
         // Add your assertions or verifications here according to the expected behavior
+        Assertions.assertEquals(0, pastPayments.size());
     }
 }
