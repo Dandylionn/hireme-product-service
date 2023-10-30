@@ -1,1 +1,3 @@
-com\hireme\recommendation\DemoApplicationTests.class
+com\hireme\assignment\controller\AssignmentControllerTest.class
+com\hireme\recommendation\service\impl\RecommendationServiceImplTest.class
+com\hireme\assignment\service\AssignmentServiceTest.class

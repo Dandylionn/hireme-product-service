@@ -43,10 +43,12 @@ public class RecommendationServiceImplTest {
         assignment2.setAssignmentId(3L);
         assignment2.setTitle("Assignment B, Test Assignment");
         AssignmentDTO assignment3 = new AssignmentDTO();
-
+        assignment3.setAssignmentId(4L);
+        assignment3.setTitle("DUMMY C");
 
         allAssignments.add(assignment1);
         allAssignments.add(assignment2);
+        allAssignments.add(assignment3);
 
         // Mock the behavior of assignmentService
         when(assignmentService.getAssignmentById(assignmentId)).thenReturn(targetAssignment);
